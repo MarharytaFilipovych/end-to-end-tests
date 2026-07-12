@@ -1,0 +1,18 @@
+package com.qa.margo.pages;
+
+import com.microsoft.playwright.Page;
+
+import static com.qa.margo.utils.Constants.LINK;
+import static com.qa.margo.utils.Constants.label;
+
+public class BasePage {
+    protected final Page page;
+
+    public BasePage(Page page) {
+        this.page = page;
+    }
+
+    public String getPrimaryHeader() {
+        return page.locator(label("primary-header")).textContent();
+    }
+}

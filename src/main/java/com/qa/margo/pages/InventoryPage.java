@@ -6,6 +6,7 @@ import com.qa.margo.models.Sort;
 
 import java.util.List;
 
+import static com.qa.margo.utils.Constants.ZERO;
 import static com.qa.margo.utils.Constants.label;
 
 public class InventoryPage extends BasePage {
@@ -34,7 +35,7 @@ public class InventoryPage extends BasePage {
     }
 
     public String getCartBadgeCount() {
-        return cartBadge.isVisible() ? cartBadge.textContent() : "0";
+        return cartBadge.isVisible() ? cartBadge.textContent() : ZERO;
     }
 
     public CartPage goToCart() {

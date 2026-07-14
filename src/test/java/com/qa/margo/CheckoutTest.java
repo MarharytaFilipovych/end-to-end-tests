@@ -20,7 +20,9 @@ import static com.qa.margo.TestData.BACKPACK;
 import static com.qa.margo.TestData.BIKE_LIGHT;
 import static com.qa.margo.TestData.CHECKOUT_DATA;
 import static com.qa.margo.TestData.PASSWORD;
+import static com.qa.margo.utils.Constants.ZERO;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static com.qa.margo.TestData.STANDARD_USER;
 
@@ -49,6 +51,8 @@ public class CheckoutTest extends BaseTest {
         assertEquals(2, stepTwo.getItemCount());
         assertTrue(stepTwo.getPaymentInfo().contains("SauceCard"));
         assertTrue(stepTwo.getShippingInfo().contains("Free Pony Express"));
+        assertTrue(cart.getProductNames().containsAll(List.of(BACKPACK, BIKE_LIGHT)));
+        assertFalse(cart.getProductPrices().isEmpty());
 
         CheckoutCompletePage complete = stepTwo.finish();
 
@@ -57,7 +61,7 @@ public class CheckoutTest extends BaseTest {
         assertTrue(complete.getConfirmationText().contains("Your order has been dispatched"));
 
         InventoryPage backToProducts = complete.backHome();
-        assertEquals("0", backToProducts.getCartBadgeCount());
+        assertEquals(ZERO, backToProducts.getCartBadgeCount());
     }
 
     @Test
@@ -103,15 +107,6 @@ public class CheckoutTest extends BaseTest {
         InventoryPage backToInventory = stepTwo.cancel();
 
         assertEquals("2", backToInventory.getCartBadgeCount());
-    }
-
-    @Test
-    void checkoutOverviewShowsCorrectPriceTotals() {
-        CheckoutStepTwoPage stepTwo = checkout().continueToOverview();
-
-        assertTrue(stepTwo.getSubtotal().contains("Item total"));
-        assertTrue(stepTwo.getTax().contains("Tax"));
-        assertTrue(stepTwo.getTotal().contains("Total"));
     }
 
     @Test
@@ -169,6 +164,21 @@ public class CheckoutTest extends BaseTest {
         List<Double> prices = inventory.getProductPrices();
         List<Double> expected = prices.stream().sorted().toList();
         assertEquals(expected, prices);
+    }
+
+    @Test
+    void checkoutOverviewShowsCorrectPriceTotals() {
+        CheckoutStepTwoPage stepTwo = checkout().continueToOverview();
+
+        double itemTotal = parseMoney(stepTwo.getSubtotal());
+        double tax = parseMoney(stepTwo.getTax());
+        double total = parseMoney(stepTwo.getTotal());
+
+        assertEquals(itemTotal + tax, total, 0.01);
+    }
+
+    private double parseMoney(String text) {
+        return Double.parseDouble(text.replaceAll("[^0-9.]", ""));
     }
 
     private CheckoutStepOnePage checkout(CheckoutData checkoutData) {

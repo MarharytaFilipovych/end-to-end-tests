@@ -18,6 +18,7 @@ import static com.qa.margo.TestData.ONESIE;
 import static com.qa.margo.TestData.PASSWORD;
 import static com.qa.margo.TestData.RED_T_SHIRT;
 import static com.qa.margo.TestData.STANDARD_USER;
+import static com.qa.margo.utils.Constants.ZERO;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CartTest extends BaseTest {
@@ -116,6 +117,7 @@ public class CartTest extends BaseTest {
 
         cart.removeProduct(BIKE_LIGHT);
         assertEquals(0, cart.getItemCount());
+        assertEquals(ZERO, cart.getCartBadgeCount());
     }
 
     private void checkItemCountOnCartPage(int expectedCount) {

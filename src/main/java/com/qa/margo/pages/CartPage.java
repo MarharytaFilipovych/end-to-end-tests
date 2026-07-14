@@ -3,6 +3,9 @@ package com.qa.margo.pages;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 
+import java.util.List;
+
+import static com.qa.margo.utils.Constants.ZERO;
 import static com.qa.margo.utils.Constants.label;
 
 public class CartPage extends BasePage {
@@ -35,5 +38,22 @@ public class CartPage extends BasePage {
     public InventoryPage continueShopping() {
         continueShoppingButton.click();
         return new InventoryPage(page);
+    }
+
+    public List<String> getProductNames() {
+        return page.locator(label("inventory-item-name")).allTextContents();
+    }
+
+    public List<Double> getProductPrices() {
+        return page.locator(label("inventory-item-price")).allTextContents()
+                .stream()
+                .map(price -> price.replace("$", "").trim())
+                .map(Double::parseDouble)
+                .toList();
+    }
+
+    public String getCartBadgeCount() {
+        Locator badge = page.locator(label("shopping-cart-badge"));
+        return badge.isVisible() ? badge.textContent() : ZERO;
     }
 }

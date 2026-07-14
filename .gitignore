@@ -39,6 +39,7 @@ build/
 
 .mvn
 
+table_results
 .env
 
 # Virtual environment

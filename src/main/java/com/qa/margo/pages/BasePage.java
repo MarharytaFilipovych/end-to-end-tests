@@ -1,9 +1,11 @@
 package com.qa.margo.pages;
 
 import com.microsoft.playwright.Page;
+import lombok.Getter;
 
 import static com.qa.margo.utils.Constants.label;
 
+@Getter
 public class BasePage {
     protected final Page page;
 
